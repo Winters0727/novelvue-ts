@@ -1,23 +1,24 @@
-import { useCookie } from '@vue-composable/cookie';
+import account from './account.js'
 
 import { createStore } from 'vuex';
 
-let { cookie } = useCookie('devcom-token');
 
 export default createStore({
   state: {
-    token : cookie.value,
-    refreshToken : localStorage.getItem('devcom-refreshToken')
+    token : localStorage.getItem('dj-token')
   },
   getters : {
     isLogin : (state) => {
-      return !!state.token || !!state.refreshToken
+      return !!state.token || !!localStorage.getItem('dj-token')
     }
   },
   mutations: {
+
   },
   actions: {
+
   },
   modules: {
+    account
   },
 });
