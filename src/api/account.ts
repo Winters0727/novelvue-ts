@@ -1,10 +1,10 @@
 import { AxiosResponse } from 'axios'
 
-import API from './api.js'
+import API from './api'
 
-export const createAccount = (payload: Object): Promise<AxiosResponse> => API.post('author/', payload);
+export const createAccount = (payload: unknown): Promise<AxiosResponse> => API.post('author/', payload);
 
-export const loginAccount = (payload: Object): Promise<AxiosResponse> => API.post('author/login/', payload, {
+export const loginAccount = (payload: unknown): Promise<AxiosResponse> => API.post('author/login/', payload, {
     headers : {
         'Authorization' : localStorage.getItem('dj-token')
     }
@@ -22,7 +22,7 @@ export const logoutAccount = (): Promise<AxiosResponse> => API.get('author/logou
     }
 })
 
-export const updateAccount = (payload: Object): Promise<AxiosResponse> => API.put(`author/user/`, payload, {
+export const updateAccount = (payload: unknown): Promise<AxiosResponse> => API.put(`author/user/`, payload, {
     headers : {
         'Authorization' : localStorage.getItem('dj-token')
     }

@@ -1,89 +1,94 @@
-import { createStore } from 'vuex';
+import {  } from 'vuex'
 
 import { createAccount, getAccount, updateAccount, deleteAccount, loginAccount, logoutAccount } from '@/api/account';
 
 interface LoginInfo {
     username : {
-        type: String,
+        type: string,
         required: true
     },
     password: {
-        type: String,
+        type: string,
         required: true
     }
 }
 
 interface RegisterInfo extends LoginInfo {
     password1: {
-        type: String,
+        type: string,
         required: true
     },
     password2: {
-        type: String,
+        type: string,
         required: true
     },
     email? : {
-        type: String
+        type: string
     },
     nickname: {
-        type : String,
+        type : string,
         required : true
     },
     profile_image : {
-        type : String,
+        type : string,
         default : ''
     }
 }
 
 interface UserInfo {
     username : {
-        type: String,
+        type: string,
         required: true  
     },
     nickname : {
-        type: String,
+        type: string,
         required: true
     },
     email : {
-        type: String,
+        type: string,
     },
     profile_image : {
-        type: String
+        type: string
     }
 }
 
-export default createStore({
+export default {
+  namespaced: true,
   state: {
     token : localStorage.getItem('dj-token'),
-    userData : {
-
-    },
+    userData : {},
   },
   getters : {
-    
+    // isLogin : (state) => {
+    //     return (!!state.token || !!localStorage.getItem('dj-token'))
+    //   }
   },
   mutations: {
-      updateUserData(state, payload: UserInfo) {
+      updateUserData(state: any, payload: UserInfo) {
           state.userData = payload;
       }
   },
   actions: {
-      async login(_, payload: LoginInfo) {
-          const data = await (await loginAccount(payload)).data.json();
-          localStorage.setItem('dj-token', data.token);
-          return data
+      async login(context: any, payload: LoginInfo) {
+        //   const data = await (await loginAccount(payload)).data.json();
+        const result = await loginAccount(payload);
+        const data = result.data;
+        console.log(data);
+        return data
+        // localStorage.setItem('dj-token', data.token);
+        // return data
       },
 
-      async logout(context) {
+      async logout(context: any) {
           const data = await (await logoutAccount()).data.json();
-          context.commit('updateUserData', {});
+          context.commit('account/updateUserData', {});
           localStorage.removeItem('dj-token');
           return data;
       },
 
-      async signup(context, payload: RegisterInfo) {
+      async signup(context: any, payload: RegisterInfo) {
           const data = await (await createAccount(payload)).data.json();
-          context.commit('updateUserData', data.userData);
+          context.commit('account/updateUserData', data.userData);
           const { username, password } = payload;
           context.dispatch('login', {
               username,
@@ -92,18 +97,20 @@ export default createStore({
           return data; 
       },
 
-      async getInfo(_) {
+      async getInfo(context: any) {
           const data = await (await getAccount()).data.json();
           return data;
       },
 
-      async updateInfo(context, payload: RegisterInfo) {
-        const data = await (await createAccount(payload)).data.json();
-        context.commit('updateUserData', data.userData);
+      async updateInfo(context: any, payload: RegisterInfo) {
+        const data = await (await updateAccount(payload)).data.json();
+        context.commit('account/updateUserData', data.userData);
+      },
+
+      async deleteUser(context: any) {
+          const result = await (await deleteAccount()).data.json();
+          return result
       }
 
-  },
-  modules: {
-    
-  },
-});
+  }
+}

@@ -1,4 +1,7 @@
-import account from './account.js'
+import account from './account'
+import book from './book'
+import chapter from './chapter'
+import review from './review'
 
 import { createStore } from 'vuex';
 
@@ -8,9 +11,7 @@ export default createStore({
     token : localStorage.getItem('dj-token')
   },
   getters : {
-    isLogin : (state) => {
-      return !!state.token || !!localStorage.getItem('dj-token')
-    }
+    
   },
   mutations: {
 
@@ -19,6 +20,9 @@ export default createStore({
 
   },
   modules: {
-    account
+    account,
+    book,
+    chapter,
+    review
   },
 });

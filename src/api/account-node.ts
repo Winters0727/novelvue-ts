@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios'
 
-import API from './api.js'
+import API from './api'
 
 export const createAccount = (payload: Object): Promise<AxiosResponse> => API.post('author/', payload);
 
