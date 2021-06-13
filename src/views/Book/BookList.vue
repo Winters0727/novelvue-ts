@@ -1,48 +1,105 @@
 <template>
-  <div>
-    <div v-if="isLoading">요</div>
-    <div v-else style="display:inline" v-for="book in bookList" :key="book.id">
-      <img :src="book.cover" />
-      <p>{{ book.title }}</p>
+  <div class="container">
+    <img id="loading-image" v-if="isLoading" src="@/assets/loading.gif" />
+    <div v-else class="novel-card-list" >
+      <book-card 
+        v-for="book in bookList" 
+        :key="book.id" 
+        :book="book" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { useStore } from 'vuex';
+import { defineComponent } from 'vue';
+import { mapState, mapMutations, mapActions } from 'vuex';
+import store from '@/store';
+
+import BookCard from '@/components/Book/BookCard.vue';
 
 export default defineComponent({
-    name: "",
+    name: "BookList",
 
-    props: {
-
+    components : {
+      BookCard
     },
 
-    setup() {
-      const store = useStore();
-      const isLoading = ref(false);
-
-      let bookList;
-
-      isLoading.value = true;
-      store.dispatch('account/login', {
-        username:"winters",
-        password:"winters001!"
-      }).then(() => {
-        store.dispatch('book/getBookList').then(res => {
-        bookList = res;
-        isLoading.value = false;
-        })
-      })
+    data() {
       return {
-        bookList,
-        isLoading:isLoading.value
+        bookList: [],
+        isLoading: false,
       }
+    },
+
+    computed : {
+      ...mapState(['book/bookData']),
+    },
+    
+    methods : {
+      ...mapMutations(['book/updateBookData']),
+
+      ...mapActions(['book/getBookList']),
+    },
+
+    async created() {
+      this.isLoading = true;
+      this.bookList = await store.dispatch('book/getBookList');
+      this.isLoading = false;
     }
 })
+
+// import { getBook } from '@/api/book';
+// import { defineComponent, ref } from 'vue';
+// import { useStore } from 'vuex';
+
+// export default defineComponent({
+//     name: "",
+
+//     props: {
+
+//     },
+
+//     setup() {
+//       const store = useStore();
+//       const isLoading = ref(false);
+//       const bookList = ref(null);
+
+//       const getBookList = async () => {
+//         isLoading.value = true;
+//         try {
+//           await store.dispatch('account/login', { username:"winters", password:"winters001!" });
+//           const data = await store.dispatch('book/getBookList');
+//           bookList.value = data.data;
+//           isLoading.value = false;
+//         }
+//         catch(err) {
+//           console.log(err);
+//         }
+//       }
+
+//       getBookList();
+
+//       return {
+//         bookList: store.state.book.bookList,
+//         isLoading
+//       }
+//     }
+// })
 </script>
 
-<style>
+<style scoped>
+.container {
+  margin: auto;
+  text-align: center;
+  align-content: center;
+}
 
+.novel-card-list {
+  text-align: center;
+}
+
+#loading-image {
+  text-align: center;
+  align-self: center;
+}
 </style>

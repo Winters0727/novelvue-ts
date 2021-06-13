@@ -1,31 +1,21 @@
 import { createBook, getBook, getAllBook, updateBook, deleteBook } from '@/api/book';
 
-interface Book {
-  title: {
-    type: string,
-    required: true
-  },
-  cover: {
-    type: string
-  }
-}
+import { Book, BookState } from '@/types/book';
 
 export default {
   namespaced: true,
   state: {
     bookList : [],
-    bookData : {
-
-    },
+    bookData : {},
   },
   getters : {
 
   },
   mutations: {
-    updateBookList(state: any, payload: any) {
+    updateBookList(state: BookState, payload: any) {
       state.bookList = payload;
     },
-    updateBookData(state: any, payload: Book) {
+    updateBookData(state: BookState, payload: Book) {
       state.bookData = payload;
     }
   },
@@ -34,6 +24,10 @@ export default {
       const data = await getAllBook();
       context.commit('updateBookList', data.data);
       return data.data;
-    }
+    },
+    async getBookInfo(context: any, payload: string) {
+      const data = await getBook(payload);
+      return data.data;
+    },
   }
 }

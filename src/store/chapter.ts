@@ -1,9 +1,14 @@
+import { createChapter, getChapter, getAllChapter, updateChapter, deleteChapter } from '@/api/chapter';
+
 import { createStore } from 'vuex';
 
+import { ChapterQuery } from '@/types/chapter'
 
-export default createStore({
+export default {
+  namespaced: true,
   state: {
-
+    chapterList : [],
+    chapterData : {},
   },
   getters : {
 
@@ -12,6 +17,9 @@ export default createStore({
 
   },
   actions: {
-
+    async getChapterList(context: any, payload: ChapterQuery) {
+      const data = await getAllChapter(payload);
+      return data.data;
+    }
   }
-});
+};
